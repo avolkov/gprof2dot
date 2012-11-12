@@ -38,6 +38,10 @@ try:
 except ImportError:
     pass
 
+if sys.version_info.major == 3:
+    unicode = str
+else:
+    bytes = str
 
 def percentage(p):
     return "%.02f%%" % (p*100.0,)
@@ -1866,13 +1870,15 @@ class DotWriter:
 
         return "#" + "".join(["%02x" % float2int(c) for c in (r, g, b)])
 
-    def escape(self, s):
-        s = s.encode('utf-8')
-        s = s.replace('\\', r'\\')
-        s = s.replace('\n', r'\n')
-        s = s.replace('\t', r'\t')
-        s = s.replace('"', r'\"')
-        return '"' + s + '"'
+    def escape(self, text):
+        if isinstance(text, bytes):
+            text = text.decode('utf-8')
+        text = text.replace('\\', r'\\')
+        text = text.replace('\n', r'\n')
+        text = text.replace('\t', r'\t')
+        text = text.replace('"', r'\"')
+        text = '"' + text + '"'
+        return text.encode('utf-8')
 
     def write(self, s):
         self.fp.write(s)

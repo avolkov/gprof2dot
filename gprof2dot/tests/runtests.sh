@@ -33,3 +33,8 @@ do
 		unset command
 	done
 done
+
+for test in *.py
+do
+    python $test
+done
