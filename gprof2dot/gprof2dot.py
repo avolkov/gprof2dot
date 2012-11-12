@@ -2045,7 +2045,3 @@ class Main:
             function.name = self.compress_function_name(function.name)
 
         dot.graph(profile, self.theme)
-
-
-if __name__ == '__main__':
-    Main().main()

@@ -1,9 +1,7 @@
 #!/bin/bash
 
-PYTHON=python2.5
-
 TESTDIR=`dirname "$0"`
-GPROF2DOT=$TESTDIR/../gprof2dot.py
+GPROF2DOT=gprof2dot
 
 if [ "$1" ]
 then
@@ -17,10 +15,13 @@ do
 	for PROFILE in $TESTDIR/*.$FORMAT
 	do
 		NAME=${PROFILE%%.$FORMAT}
-		echo $PYTHON $GPROF2DOT -f $FORMAT -o $NAME.dot $PROFILE
-		$PYTHON $GPROF2DOT -f $FORMAT -o $NAME.dot $PROFILE || continue
-		echo dot -Tpng -o $NAME.png $NAME.dot
-		dot -Tpng -o $NAME.png $NAME.dot || continue
+
+		command="${GPROF2DOT} -f $FORMAT -o $NAME.dot $PROFILE"
+		echo $command
+		echo $command | sh || continue
+
+		command="dot -Tpng -o $NAME.png $NAME.dot"
+		echo $command | sh || continue
 
 		if [ ! -f $NAME.orig.dot ]
 		then
@@ -29,5 +30,6 @@ do
 		else
 			diff $NAME.orig.dot $NAME.dot
 		fi
+		unset command
 	done
 done
